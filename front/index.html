@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app">
+      <form class="createProfileForm">
+        <h2>프로필 정보를 작성하세요</h2>
+        <input type="text" name="name" class="nameInput" placeholder="이름" />
+        <input
+          type="text"
+          name="description"
+          class="descriptionInput"
+          placeholder="소개"
+        />
+        <label for="image">
+          <div class="addImageLabel">이미지 추가하기</div>
+        </label>
+        <input
+          type="file"
+          id="image"
+          class="addImage"
+          placeholder="이미지 추가하기"
+        />
+        <img
+          class="preview"
+          accept=".png, .jpeg, .jpg"
+          style="width: 200px; height: 200px"
+        />
+        <button type="submit" class="submitButton">프로필 생성하기</button>
+      </form>
+      <div class="profileWrapper">
+        <div class="profileList"></div>
+        <div class="pagination"></div>
+      </div>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
