@@ -62,13 +62,13 @@ document.querySelector(".pagination").innerHTML = `
 `;
 
 document.querySelector(".prevBtn").style.display = "none";
-
+document.querySelector(".nextBtn").style.display = "none";
 // 서버에서 이미지 가져오기
 axios
   .get("http://localhost:3000/profiles?offset=${offset}&limit=5")
   .then((res) => {
     console.log(res);
-
+    document.querySelector(".nextBtn").style.display = "block";
     res.data.forEach((item) => {
       document.querySelector(".profileList").innerHTML += `
       <div class="profileItem">
@@ -80,6 +80,9 @@ axios
       </div>
     `;
     });
+  })
+  .catch((err) => {
+    alert("프로필을 불러오는데 실패했습니다.");
   });
 
 // 버튼 클릭시 이벤트 생성 다음 페이지
