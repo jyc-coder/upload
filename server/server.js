@@ -8,6 +8,8 @@ const { v4: uuid } = require("uuid");
 const mime = require("mime-types");
 const Profile = require("./models/profile");
 const multer = require("multer");
+
+const PORT = process.env.PORT || 3000;
 // 파일 저장시 경로 ,이름 설정
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "./uploads"),
@@ -73,8 +75,8 @@ mongoose
       }
     });
 
-    app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
+    app.listen(PORT || 3000, () =>
+      console.log(`Server is running on ${PORT || 3000}`)
+    );
   })
   .catch((err) => console.log(err));
-
-const PORT = 3000;
