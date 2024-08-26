@@ -3,6 +3,8 @@ import axios from "axios";
 
 const url = process.env.URL || "http://localhost";
 const port = process.env.PORT || 3000;
+
+console.log(url, port);
 // 업로드할 이미지를 미리보기
 document.querySelector(".addImage").addEventListener("change", () => {
   const reader = new FileReader();
@@ -128,19 +130,21 @@ document.querySelector(".nextBtn").addEventListener("click", () => {
 });
 
 document.querySelector(".prevBtn").addEventListener("click", () => {
-  axios.get(`${url}/profiles?offset=${offset - 5}&limit=5`).then((res) => {
-    console.log(res.data);
-    const data = res.data.profiles;
-    offset = offset - 5;
-    if (offset === 0) {
-      document.querySelector(".prevBtn").style.display = "none";
-    } else {
-      document.querySelector(".nextBtn").style.display = "block";
-    }
-    // .profileList 초기화
-    document.querySelector(".profileList").innerHTML = "";
-    data.forEach((item) => {
-      document.querySelector(".profileList").innerHTML += `
+  axios
+    .get(`${url}:${port}/profiles?offset=${offset - 5}&limit=5`)
+    .then((res) => {
+      console.log(res.data);
+      const data = res.data.profiles;
+      offset = offset - 5;
+      if (offset === 0) {
+        document.querySelector(".prevBtn").style.display = "none";
+      } else {
+        document.querySelector(".nextBtn").style.display = "block";
+      }
+      // .profileList 초기화
+      document.querySelector(".profileList").innerHTML = "";
+      data.forEach((item) => {
+        document.querySelector(".profileList").innerHTML += `
           <div class="profileItem">
             <img src="${item.image}" class="profileImage" />
             <div class="profileInfo">
@@ -149,6 +153,6 @@ document.querySelector(".prevBtn").addEventListener("click", () => {
             </div>
           </div>
         `;
+      });
     });
-  });
 });
