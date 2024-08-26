@@ -49,12 +49,12 @@ const getSignedUrl = ({ key }) => {
   });
 };
 // 파일 저장시 경로 ,이름 설정
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "./uploads"),
-  filename: (req, file, cb) =>
-    // mime-type과 uuid를 이용해서 같은 파일이라도 중복되지 않게 이름을 설정
-    cb(null, `${uuid()}.${mime.extension(file.mimetype)}`),
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, "./uploads"),
+//   filename: (req, file, cb) =>
+//     // mime-type과 uuid를 이용해서 같은 파일이라도 중복되지 않게 이름을 설정
+//     cb(null, `${uuid()}.${mime.extension(file.mimetype)}`),
+// });
 
 const upload = multer({
   storage: multerS3({
@@ -93,7 +93,6 @@ mongoose
             return { imageKey, presigned };
           })
         );
-        console.log(presignedData);
         res.status(200).json({ presignedData });
       } catch (err) {
         console.log(err);
@@ -105,13 +104,11 @@ mongoose
     app.post("/profiles", upload.single("image"), async (req, res) => {
       const { image, name, description } = req.body;
 
-      console.log(req);
       const profile = new Profile({
         image,
         name,
         description,
       });
-      console.log(profile);
       await profile.save().then(() => {
         res.status(200).json({
           success: true,

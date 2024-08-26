@@ -46,7 +46,6 @@ document
       const presignedData = await axios.post(`${url}:${port}/presigned`, {
         contentTypes: [files].map((file) => file.type),
       });
-      console.log(presignedData);
 
       await Promise.all(
         [files].map((file, index) => {
@@ -68,7 +67,6 @@ document
         description: document.querySelector(".descriptionInput").value,
       });
 
-      console.log(data);
       alert("프로필이 생성되었습니다.");
       // 클릭 후 새로고침
       location.reload();
@@ -78,7 +76,6 @@ document
     }
   });
 
-let lastProfileId = "";
 let offset = 0;
 // 페이지네이션 버튼 생성
 // .pagination에 버튼 생성
