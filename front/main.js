@@ -1,10 +1,12 @@
 import "./style.css";
 import axios from "axios";
 
+// const url = import.meta.env.VITE_URL || "http://localhost";
 const url = import.meta.env.VITE_URL || "http://localhost";
 const port = import.meta.env.VITE_PORT || "3000";
+const bucket = import.meta.env.VITE_BUCKET;
 
-console.log(url, port);
+console.log(bucket);
 // 업로드할 이미지를 미리보기
 document.querySelector(".addImage").addEventListener("change", () => {
   const reader = new FileReader();
@@ -26,35 +28,55 @@ document.querySelector(".addImage").addEventListener("change", () => {
   console.log(document.querySelector(".addImage").files[0]);
 });
 
-document.querySelector(".createProfileForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  //.addimage에 파일이 없으면 alert 호출
-  if (!document.querySelector(".addImage").files[0]) {
-    alert("이미지를 업로드 해주세요.");
-    return;
-  }
-  const formData = new FormData();
-  formData.append("image", document.querySelector(".addImage").files[0]);
-  formData.append("name", document.querySelector(".nameInput").value);
-  formData.append(
-    "description",
-    document.querySelector(".descriptionInput").value
-  );
-  console.log(formData);
-  // 업로드 요청
-  try {
-    axios.post(`${url}:${port}/profiles`, formData).then((res) => {
-      console.log(res);
+document
+  .querySelector(".createProfileForm")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    //.addimage에 파일이 없으면 alert 호출
+    if (!document.querySelector(".addImage").files[0]) {
+      alert("이미지를 업로드 해주세요.");
+      return;
+    }
+
+    try {
+      const files = document.querySelector(".addImage").files[0];
+      // 현재 단일 이미지 업로드이므로 files를 배열로 감싸줌
+      console.log([files].map((file) => file.type));
+      const presignedData = await axios.post(`${url}:${port}/presigned`, {
+        contentTypes: [files].map((file) => file.type),
+      });
+      console.log(presignedData);
+
+      await Promise.all(
+        [files].map((file, index) => {
+          const { presigned } = presignedData.data.presignedData[index];
+          const formData = new FormData();
+          for (const key in presigned.fields) {
+            formData.append(key, presigned.fields[key]);
+          }
+          console.log("파일", file);
+          formData.append("file", file);
+          formData.append("Content-Type", file.type);
+          return axios.post(presigned.url, formData);
+        })
+      );
+
+      const { data } = await axios.post(`${url}:${port}/profiles`, {
+        image: presignedData.data.presignedData[0].imageKey,
+        name: document.querySelector(".nameInput").value,
+        description: document.querySelector(".descriptionInput").value,
+      });
+
+      console.log(data);
       alert("프로필이 생성되었습니다.");
       // 클릭 후 새로고침
-
       location.reload();
-    });
-  } catch (err) {
-    alert("프로필 생성에 실패했습니다.");
-    console.log(err);
-  }
-});
+    } catch (err) {
+      console.log(err);
+      alert("프로필 생성에 실패했습니다.");
+    }
+  });
 
 let lastProfileId = "";
 let offset = 0;
@@ -81,7 +103,7 @@ axios
     data.forEach((item) => {
       document.querySelector(".profileList").innerHTML += `
       <div class="profileItem">
-        <img src=${item.image} class="profileImage" />
+        <img src=${bucket}/${item.image} class="profileImage" />
         <div class="profileInfo">
         <h3>이름 :${item.name}</h3> 
         <p>소개 :${item.description}</p>
@@ -111,7 +133,7 @@ document.querySelector(".nextBtn").addEventListener("click", () => {
       data.forEach((item) => {
         document.querySelector(".profileList").innerHTML += `
           <div class="profileItem">
-            <img src="${item.image}" class="profileImage" />
+            <img src="${bucket}/${item.image}" class="profileImage" />
             <div class="profileInfo">
             <h3>이름 :${item.name}</h3>
             <p>소개 :${item.description}</p>
@@ -146,7 +168,7 @@ document.querySelector(".prevBtn").addEventListener("click", () => {
       data.forEach((item) => {
         document.querySelector(".profileList").innerHTML += `
           <div class="profileItem">
-            <img src="${item.image}" class="profileImage" />
+            <img src="${bucket}/${item.image}" class="profileImage" />
             <div class="profileInfo">
             <h3>이름 :${item.name}</h3>
             <p>소개 :${item.description}</p>
