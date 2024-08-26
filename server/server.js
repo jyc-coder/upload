@@ -14,6 +14,10 @@ const { S3Client } = require("@aws-sdk/client-s3");
 
 const PORT = process.env.PORT || 3000;
 
+console.log(process.env.MONGO_URI);
+console.log(process.env.AWS_ACCESS_KEY_ID);
+console.log(process.env.AWS_SECRET_ACCESS_KEY);
+
 // s3 설정
 const s3 = new S3Client({
   region: "ap-northeast-2",

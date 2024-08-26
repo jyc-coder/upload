@@ -1,8 +1,8 @@
 import "./style.css";
 import axios from "axios";
 
-const url = process.env.URL || "http://localhost";
-const port = process.env.PORT || 3000;
+const url = import.meta.env.VITE_URL || "http://localhost";
+const port = import.meta.env.VITE_PORT || "3000";
 
 console.log(url, port);
 // 업로드할 이미지를 미리보기
