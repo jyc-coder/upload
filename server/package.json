@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "build": "npm run build --prefix ../front && npm run start",
+    "start": "npm run build --prefix ../front && nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
