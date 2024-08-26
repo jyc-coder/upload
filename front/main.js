@@ -1,7 +1,8 @@
 import "./style.css";
 import axios from "axios";
 
-const url = process.env.URL || "http://localhost:3000";
+const url = process.env.URL || "http://localhost";
+const port = process.env.PORT || 3000;
 // 업로드할 이미지를 미리보기
 document.querySelector(".addImage").addEventListener("change", () => {
   const reader = new FileReader();
@@ -40,7 +41,7 @@ document.querySelector(".createProfileForm").addEventListener("submit", (e) => {
   console.log(formData);
   // 업로드 요청
   try {
-    axios.post(`${url}/profiles`, formData).then((res) => {
+    axios.post(`${url}:${port}/profiles`, formData).then((res) => {
       console.log(res);
       alert("프로필이 생성되었습니다.");
       // 클릭 후 새로고침
@@ -66,7 +67,7 @@ document.querySelector(".prevBtn").style.display = "none";
 document.querySelector(".nextBtn").style.display = "none";
 // 서버에서 이미지 가져오기
 axios
-  .get(`${url}/profiles?offset=${offset}&limit=5`)
+  .get(`${url}:${port}/profiles?offset=${offset}&limit=5`)
   .then((res) => {
     console.log(res);
 
@@ -93,17 +94,19 @@ axios
 
 // 버튼 클릭시 이벤트 생성 다음 페이지
 document.querySelector(".nextBtn").addEventListener("click", () => {
-  axios.get(`${url}/profiles?offset=${offset + 5}&limit=5`).then((res) => {
-    console.log(res.data);
-    const data = res.data.profiles;
-    offset = offset + 5;
-    if (offset > 0) {
-      document.querySelector(".prevBtn").style.display = "block";
-    }
-    // .profileList 초기화
-    document.querySelector(".profileList").innerHTML = "";
-    data.forEach((item) => {
-      document.querySelector(".profileList").innerHTML += `
+  axios
+    .get(`${url}:${port}/profiles?offset=${offset + 5}&limit=5`)
+    .then((res) => {
+      console.log(res.data);
+      const data = res.data.profiles;
+      offset = offset + 5;
+      if (offset > 0) {
+        document.querySelector(".prevBtn").style.display = "block";
+      }
+      // .profileList 초기화
+      document.querySelector(".profileList").innerHTML = "";
+      data.forEach((item) => {
+        document.querySelector(".profileList").innerHTML += `
           <div class="profileItem">
             <img src="${item.image}" class="profileImage" />
             <div class="profileInfo">
@@ -112,15 +115,15 @@ document.querySelector(".nextBtn").addEventListener("click", () => {
             </div>
           </div>
         `;
-    });
+      });
 
-    // 만약 data 길이가 5보다 작다면 다음 버튼 생성 되지 않게 설정
-    if (res.data.length < 5) {
-      document.querySelector(".nextBtn").style.display = "none";
-    } else {
-      document.querySelector(".prevBtn").style.display = "block";
-    }
-  });
+      // 만약 data 길이가 5보다 작다면 다음 버튼 생성 되지 않게 설정
+      if (res.data.length < 5) {
+        document.querySelector(".nextBtn").style.display = "none";
+      } else {
+        document.querySelector(".prevBtn").style.display = "block";
+      }
+    });
 });
 
 document.querySelector(".prevBtn").addEventListener("click", () => {
