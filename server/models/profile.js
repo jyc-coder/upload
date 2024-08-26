@@ -2,13 +2,7 @@ const mongoose = require("mongoose");
 
 const profileSchema = new mongoose.Schema(
   {
-    // 이미지 fileName
-    imageKey: {
-      type: String,
-      required: true,
-    },
-    // 이미지 originalFileName
-    originalFileName: {
+    image: {
       type: String,
       required: true,
     },
