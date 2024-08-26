@@ -89,6 +89,7 @@ axios
     });
   })
   .catch((err) => {
+    console.log(err);
     alert("프로필을 불러오는데 실패했습니다.");
   });
 
